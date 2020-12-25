@@ -74,3 +74,43 @@ $uni-color-subtitle: #555555; // 二级标题颜色
 $uni-font-size-subtitle:36rpx;
 $uni-color-paragraph: #3F536E; // 文章段落颜色
 $uni-font-size-paragraph:30rpx;
+
+
+/* mine */
+$white: #ffffff;
+$black: #000000;
+$yellow: #FEDE33;
+
+$font12: 12px;
+$font: 14px;
+$font16: 16px;
+$font18: 18px;
+$font20: 20px;
+$color: $white;
+$color2: #98c2ef;
+$color3: #d2cdcd;
+$color4: #bbbbbb;
+
+$bgColor: #5d7086;
+$bgColor2: rgba(0, 0, 0, .3);
+$nightColor: #101417;
+$themeColor: #1D78E1;
+$themeColor2: #b47ce4;
+
+$borColor: #29C287;
+$borColor2: #eeeeee;
+
+
+@mixin text-one {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@mixin text-overflow($num: 2){
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: $num;
+	-webkit-box-orient: vertical;
+}

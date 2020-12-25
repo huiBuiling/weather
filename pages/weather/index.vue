@@ -1,175 +1,119 @@
 <template>
-	<view class="we">
-		<view class="we-header">
-			<view class="we-h we-header-ser">
-				<text class="icon icon-search"></text>
-			</view>
-			<view class="we-h we-header-text">
-				<text>小榴可爱</text>
-			</view>
-			<view class="we-h we-header-m">
-				<text class="icon icon-more"></text>
-			</view>
-		</view>
+	<view class="ql-weather">
+		<WeHeader
+			:city="city"
+		/>
 		
-		<view class="we-con">
-			<view class="we-con-bg">
-				<view class="we-con-t"></view>
-				<text class="icon icon-xiaoyu we-ti-icon"></text>
-				<view class="we-con-num">
-					<text>21</text>
-					<text class="we-con-num-c">℃</text>
-				</view>
-			</view>
+		<view class="we-city">
+			<!-- 当前城市信息 -->
+			<WeContent
+				:city="city"
+				:curData="curData"
+			 />
 			
-			<view class="we-con-msg">
-				<text>21℃ / 19℃</text>
-			</view>
-			
-			<view class="we-con-msg2">
-				<text>多云  空气良</text>
-			</view>
-			
-			<view class="we-con-address">
-				<text>天河区</text>
-				<text class="icon icon-address"></text>
-			</view>
-		</view>
-		
-		<view class="we-chart">
-			<view class="we-chart-top">
-				<text class="we-chart-top-i">中国天气</text>
-				<text class="we-chart-top-i">10分钟前发布</text>
-			</view>
-			<!-- <view class="we-chart-title">
-				<text>中国天气</text>
-				<text>10分钟前发布</text>
-			</view>
-			<view class="we-chart-time">
-				<text>中国天气</text>
-				<text>10分钟前发布</text>
-			</view> -->
-		</view>
-		
-		<view class="we-list">
-			<text>chart</text>
-		</view>
-		
-		<!-- <WeatherIndex /> -->
+			<!-- 日 和 星期 列表 -->
+			<WeList
+				:timepoint="curData.timepoint"
+				:daily="daily"
+				:hourly="hourly"
+			 />
+		 </view>
 	</view>
 </template>
 
 <script>
+	import WeHeader from '@/components/weather/header.vue';
+	import WeContent from '@/components/weather/content.vue';
+	import WeList from '@/components/weather/list.vue';
+	import { setItemSync, getItemSync } from '@/utils/storage.js';
+	import { api } from '@/utils/api.js'
+	
 	export default {
+		components:{
+			'WeHeader': WeHeader,
+			'WeContent': WeContent,
+			'WeList': WeList,
+		},
 		data() {
 			return {
-				search: 'search',
-				more: 'success',
+				city: '北京',
+				curData: {
+					temp: 0, // 气温
+					templow: 16,  // 最低气温
+					temphigh: 26, // 最高气温
+					weather: '多云', // 天气
+					quality: '优',  // 空气质量
+					timepoint: '2020-07-08 20:00:00', // 最近一次更新时间
+				},
+				daily: [],     // 一星期
+				hourly: [],   // 按小时
 			}
 		},
+		onLoad() {
+			// this.getCurCity();
+			this.getPlatform();
+		},
+		onShow() {
+			this.getPlatform()
+		},
 		methods: {
-
+			getCurCity() {
+				uni.getLocation({
+				    type: 'wgs84',
+					geocode: true,
+				    success: function (res) {
+						console.log(res);
+						uni.showToast({
+							title: res.address
+						});
+						this.getPlatform();
+				    }
+				});
+			},
+			getPlatform() {
+				const city = getItemSync('city') || this.city;
+				// console.log('城市呀呀呀呀---' + city);
+				this.getCurrentCityData(city);
+			},
+			async getCurrentCityData(city) {
+				this.city = city;
+				uni.showToast({
+					title: city
+				})
+				const data = await api.curCityData(city);
+				if(data && data.status === 0) {
+					const {
+						temp, templow, temphigh, timepoint,
+						weather, daily, hourly,
+					} = data.result;
+					
+					this.curData = {
+						temp, templow, temphigh, weather, 
+						timepoint: data.result.aqi.timepoint || '',
+						quality: data.result.aqi.quality
+					}
+					this.hourly = hourly;
+					this.daily = daily;
+				}
+			}
 		}
 	}
 </script>
 
-<style scoped lang="scss">
-	@import url('../../static/iconfont.css');
-	$font: 14px;
-	$font16: 16px;
-	$font18: 18px;
-	$font20: 20px;
-	$color: #ffffff;
-	$color2: #98c2ef;
-	.we {
-		font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-		padding: 0 10px;
+<style lang="scss" scoped>
+	.ql-weather {
+		// font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+		width: calc(750rpx - 40rpx);
+		// height: 100%;
+		padding: 0 20rpx;
 		font-size: $font16;
-		line-height: 24px;
+		line-height: 48rpx;
 		background-image: url(../../static/image/bg2.jpg);
 		background-repeat: no-repeat;
-		background-size: 100% 100%;
+		background-size: 100% 103%;
 		background-attachment: fixed;
+		// background: $nightColor;
 		color: $color;
-		.we-header {
-			height: 56px;
-			display: flex;
-			// align-items: center;
-			.we-h {
-				height: 56px;
-				line-height: 56px;
-				flex: 1;
-			}
-			.we-header-text {
-				text-align: center;
-			}
-			.we-header-m {
-				text-align: right;
-			}
-		}
-		.we-con{
-			// height: 300px;
-			text-align: center;
-			.we-con-bg{
-				position: relative;
-				width: 120px;
-				margin: 0 auto;
-				text-align: center;
-				.we-con-t{
-					margin-top: 50px;
-				}
-				.we-con-num{
-					font-size: 30px;
-					position: absolute;
-					left: calc(50% - 30px);
-					top: -10px;
-					.we-con-num-c{
-						font-size: 23px;
-						position: absolute;
-						top: -5px;
-					}
-				}
-				.we-ti-icon{
-					font-size: 120px;
-					color: #6499d6;
-				}
-			}
-			.we-con-msg{
-				font-size: $font;
-				font-weight: 600;
-				margin: 10px 0 0;
-			}
-			.we-con-msg2{
-				margin: 0 0 15px;
-				color: $color2;
-			}
-			.we-con-address{
-				font-size: $font18;
-				.icon{
-					margin-left: 10px;
-				}
-			}
-		}
-		.we-chart {
-			height: 160px;
-			margin-top: 30px;
-			font-size: $font;
-			.we-chart-top {
-				display: flex;
-				border-bottom: 1px solid $color2;
-				padding-bottom: 10px;
-				.we-chart-top-i{
-					flex: 1;
-					justify-content: space-around;
-					&:last-child{
-						text-align: right;
-					}
-				}
-			}
-		}
-		.we-list{
-			height: 300px;
-			border: 1px solid #007AFF;
-		}
+		.we-city{}
 	}
 </style>

@@ -1,0 +1,6 @@
+.DS_Store
+/unpackage/
+
+# Editor directories and files
+.idea
+.vscode
