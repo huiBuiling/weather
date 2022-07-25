@@ -9,13 +9,13 @@ export const myRequest = (options) => {
 			success: (res) => {
 				if(res.statusCode === 200) {}
 				uni.hideLoading();
-				resolve(res.data.result);
+				resolve(options.type == 2 ? res.data : res.data.result);
 			},
 			fail: (err) =>{
+				uni.hideLoading();
 				uni.showToast({
 					title: '接口请求失败！'
 				});
-				uni.hideLoading();
 				reject(err);
 			}
 		})

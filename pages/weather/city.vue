@@ -1,9 +1,23 @@
 <template>
 	<view class="we-city">
-		<SearchBar
+		<!-- <SearchBar
 			:searchVal="searchVal"
 			pages="city"
-		/>
+		/> -->
+		
+		<view class="ql-r-search">
+			<view class="ql-r-input">
+				<i class="icon icon-search"></i>
+				<input 
+					class="ql-r-sea-i" 
+					:value="searchVal"
+					placeholder="请输入城市"
+					@input="change"
+					confirm-type="search"
+					@confirm="goCheckCity('-')"
+				/>
+			</view>
+		</view>
 		
 		<view class="city-label">
 			<text>推荐城市</text>
@@ -58,6 +72,9 @@
 			});
 		},
 		methods: {
+			change(event) {
+				this.searchVal = event.detail.value
+			},
 			async getCityData(city) {
 				const data = await api.getAllCity();
 				let cityList = data.result.splice(0, 39);
@@ -76,9 +93,10 @@
 				this.cityList = cityList;
 			},
 			goCheckCity(city) {
-				setItemSync('city', city);
+				console.log(city, this.cityList)
+				// setItemSync('city', city);
 				uni.navigateTo({
-					url: '/pages/weather/index'
+					url: `/pages/weather/index?city=${city == '-' ? this.searchVal : city}`
 				})
 			}
 		}
@@ -119,5 +137,35 @@
 			
 		}
 		
+	}
+	
+	$h: 80rpx;
+	.ql-r-search{
+		width: calc(750rpx - 40rpx);
+		height: $h;
+		line-height: $h;
+		margin: 0 auto 20rpx;
+		.ql-r-input{
+			height: $h;
+			line-height: $h;
+			background: $bgColor2;
+			border-radius: 10rpx;
+			padding: 0 24rpx;
+			color: $color;
+			.icon-search{
+				display: inline-block;
+				vertical-align: top;
+				width: 60rpx;
+				font-size: 40rpx;
+			}
+			.ql-r-sea-i{
+				display: inline-block;
+				vertical-align: top;
+				width: calc(100% - 80rpx);
+				height: $h;
+				line-height: $h;
+				font-size: 36rpx;
+			}
+		}
 	}
 </style>

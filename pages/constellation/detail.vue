@@ -11,7 +11,7 @@
 					<text class="name">{{detailData.name}}</text>
 				</view>
 				<view class="msg-con" v-if="type === 'today'">
-					<text class="msg-yuns">今日运势({{detailData.date}})</text>
+					<text class="msg-yuns">今日运势 ({{detailData.datetime}})</text>
 					<Star v-if="detailData.all" :data="detailData.all" :bigSatr="true"></Star>
 					<view class="msg-speed">
 						<text>速配星座：</text>
@@ -42,7 +42,7 @@
 			
 			<view class="conste-type line">
 				<view 
-				:class="['type-item', `type-0${index + 1}`]" 
+				:class="['type-item', `type-0${index + 1}`, item.type === type ? 'active' : '']" 
 				@click="checkType(item.type)"
 				v-for="(item, index) in typeList"
 				:key="item.type"
@@ -100,8 +100,10 @@
 		},
 		methods: {
 			async getConstellationData(val) {
-				const data = await api.constellationData({type: val, consName: this.consName});
-				this.detailData = data.result1;
+				// console.log('detail', this.consName)
+				const data = await api.consteApi({type: val, consName: this.consName});
+				console.log('data', data)
+				this.detailData = data;
 				this.type = val;
 				uni.hideLoading()
 				// setItemSync('detailData', data.result1)
@@ -141,15 +143,15 @@
 			position: relative;
 			margin: 0 40rpx;
 			padding: 80rpx 0 30rpx;
-			animation: conShowIn 5s;
+			animation: conShowIn .5s;
 			opacity: 1;
 			&::after, &::before{
 				bottom: 30rpx;
-				width: 6rpx;
+				width: 20rpx;
 				height: 60rpx;
 				border: 6rpx solid $white;
 				background: transparent !important;
-				z-index: 100;
+				z-index: 1;
 			}
 			.conste-top{
 				height: 260rpx;
@@ -175,9 +177,10 @@
 				}
 				.msg-con{
 					padding: 40rpx 20rpx 40rpx 240rpx;
-					color: #777777;
+					color: #333;
 					.msg-yuns{
 						display: block;
+						margin-bottom: 30rpx;
 					}
 					.msg-yuns2{
 						display: block;
@@ -198,6 +201,7 @@
 					}
 					.msg-speed{
 						font-size: 30rpx;
+						margin-top: 30rpx;
 						.speed-label{
 							color: $themeColor2;
 						}
@@ -206,23 +210,28 @@
 			}
 		}
 		.conste-type{
-			z-index: 99;
+			    z-index: 10;
+			    position: relative;
 			.type-item{
 				position: absolute;
 				background: #ffd857;
 				color: #fff;
-				padding: 5px 10px;
+				padding: 8px 15px;
 				border-radius: 50px;
-				transform: rotate(60deg);
+				transform: rotate(15deg);
+				border: 10rpx solid #fff;
 			}
 			.type-01{
-				bottom: -45rpx;
+				bottom: -76rpx;
 				left: 30px;
 			}
 			.type-02{
-				bottom: -45rpx;
+				bottom: -70rpx;
 				right: 30px;
 			}
+		}
+		.active{
+			border: 10rpx solid $themeColor2 !important;
 		}
 		
 		@keyframes conShowIn{

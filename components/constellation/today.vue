@@ -68,7 +68,7 @@
 		
 		.conste-item{
 			font-size: 28rpx;
-			color: #777;
+			color: #333;
 			.conste-item-i{
 				line-height: 60rpx;
 			}
@@ -94,11 +94,12 @@
 				text-align: center;
 				color: $white;
 				font-size: 30rpx;
-				margin-bottom: 15rpx;
+				margin-bottom: 30rpx;
 			}
 			.conste-text{
 				line-height: 40rpx;
 				font-size: 26rpx;
+				text-indent: 2em;
 			}
 		}
 	}

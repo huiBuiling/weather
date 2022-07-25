@@ -11,6 +11,7 @@ const appkey2 = '55fe9522b1f5dc6ed24e4daab7ec481b';
 // 获取是哪个平台
 const platform = uni.getSystemInfoSync().platform;
 let fontApi = 'https://way.jd.com';
+const fontApi2 = 'http://web.juhe.cn';
 // let fontApi = 'https://api.avatardata.cn';
 if(process.env.NODE_ENV === 'development' && platform !== 'devtools') {
 	// 开发环境且非小程序调试工具
@@ -141,17 +142,21 @@ const jockTextData = (options) => {
 
 
 /**
- * 星座 
+ * 星座 - 废弃(收费)
  */
-const constellationKey = '506a24170c084c9dbcf07b647833124d';
+// const constellationKey = '506a24170c084c9dbcf07b647833124d';
+const constellationKey = 'ea39f123cc8985dcd64542fb7e42a6ea';
 const consteApi = (options) => {
+	// console.log('api', options)
 	return myRequest({
 		data: {
 			key: constellationKey,
 			consName: options.consName || '射手座',
 			type: options.type || 'today',
 		},
-		url: fontApi + '/Constellation/Query',
+		// url: fontApi + '/Constellation/Query',
+		url: fontApi2 + '/constellation/getAll',
+		type: 2
 	});
 }
 
